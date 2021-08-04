@@ -48,7 +48,12 @@ export interface CsGroupServiceConfig {
 export interface CsContentServiceConfig {
     hierarchyApiPath: string;
     questionListApiPath: string;
+    apiPath: string;
 }
+
+// export interface CsContentSearchServiceConfig {
+//     apiPath: string;
+// }
 
 export interface CsFrameworkServiceConfig {
     apiPath: string;
@@ -95,7 +100,8 @@ export interface CsConfig {
         formServiceConfig?: CsFormServiceConfig,
         systemSettingsServiceConfig?: CsSystemSettingsServiceConfig,
         discussionServiceConfig?: CsDiscussionServiceConfig,
-        contentServiceConfig?: CsContentServiceConfig
+        contentServiceConfig?: CsContentServiceConfig,
+        // contentSearchServiceConfig?: CsContentSearchServiceConfig
     };
 }
 
@@ -276,6 +282,8 @@ export class CsModule {
                 .toConstantValue(config.services.contentServiceConfig.hierarchyApiPath);
                 this._container[mode]<string>(InjectionTokens.services.content.CONTENT_SERVICE_QUESTION_LIST_API_PATH)
                 .toConstantValue(config.services.contentServiceConfig.questionListApiPath);
+                this._container[mode]<string>(InjectionTokens.services.content.CONTENT_SERVICE_SEARCH)
+                    .toConstantValue(config.services.contentServiceConfig.apiPath);
         }
 
         // userService

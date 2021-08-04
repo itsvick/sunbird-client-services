@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { InjectionTokens } from '../../../injection-tokens';
 import { CsHttpRequestType, CsHttpService, CsRequest } from '../../../core/http-service/interface';
 import { map } from 'rxjs/operators';
+import { CsContentSearchRequest, CsContentGetContentListResponse } from '../interface/cs-content-service';
 
 @injectable()
 export class ContentServiceImpl implements CsContentService {
@@ -12,6 +13,7 @@ export class ContentServiceImpl implements CsContentService {
         @inject(InjectionTokens.core.HTTP_SERVICE) private httpService: CsHttpService,
         @inject(InjectionTokens.services.content.CONTENT_SERVICE_HIERARCHY_API_PATH) private hierarchyApiPath: string,
         @inject(InjectionTokens.services.content.CONTENT_SERVICE_QUESTION_LIST_API_PATH) private questionListApiPath: string,
+        @inject(InjectionTokens.services.content.CONTENT_SERVICE_QUESTION_LIST_API_PATH) private apiPath: string,
     ) {
     }
 
@@ -29,7 +31,7 @@ export class ContentServiceImpl implements CsContentService {
         );
     }
 
-    getQuestionSetRead(contentId: string, params?:any,  config?: CsContentServiceConfig): Observable<CsContentGetQuestionSetResponse> {
+    getQuestionSetRead(contentId: string, params?: any, config?: CsContentServiceConfig): Observable<CsContentGetQuestionSetResponse> {
         const apiRequest: CsRequest = new CsRequest.Builder()
             .withType(CsHttpRequestType.GET)
             .withPath((config ? config.hierarchyApiPath : this.hierarchyApiPath) + '/read/' + contentId)
@@ -57,6 +59,19 @@ export class ContentServiceImpl implements CsContentService {
                     },
                 }
             })
+            .build();
+        return this.httpService.fetch<{ result: {} }>(apiRequest).pipe(
+            map((r) => r.body.result)
+        );
+    }
+
+    getContentList(request: CsContentSearchRequest, params = {}, config?: CsContentServiceConfig):
+        Observable<CsContentGetContentListResponse> {
+        const apiRequest: CsRequest = new CsRequest.Builder()
+            .withType(CsHttpRequestType.POST)
+            .withPath((config ? config.apiPath : this.apiPath) + '/v1/search')
+            .withParameters(params)
+            .withBody({ request })
             .build();
         return this.httpService.fetch<{ result: {} }>(apiRequest).pipe(
             map((r) => r.body.result)
