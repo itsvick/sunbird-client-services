@@ -50,6 +50,7 @@ export interface Content {
     contributors: string;
     streamingUrl: string;
     totalScore: any;
+    children?: any[];
     altMsg?: AltMsg [];
     organisation?: string;
     author?: string;
